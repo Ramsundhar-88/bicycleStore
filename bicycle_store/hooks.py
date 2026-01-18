@@ -5,6 +5,40 @@ app_description = "this project will implement ERPNext for a Bicycle Store to ma
 app_email = "bicycle@gmail.com"
 app_license = "mit"
 
+
+doctype_js = {
+    "Quotation": "public/js/quotation_custom.js",
+    "Sales Order": "public/js/sales_order_custom.js",
+}
+
+# Doc Events
+doc_events = {
+    "Lead": {
+        "before_insert": "bicycle_store.events.lead_events.set_default_lead_source",
+    },
+    "Quotation": {
+        "validate": "bicycle_store.events.quotation_events.validate_discount_rules",
+        "on_submit": "bicycle_store.events.quotation_events.auto_create_sales_order",
+    },
+    "Sales Order": {
+        "validate": "bicycle_store.events.sales_order_events.validate_sales_order",
+    },
+    "Delivery Note": {
+        "validate": "bicycle_store.events.delivery_note_events.prevent_negative_stock",
+    },
+    "Sales Invoice": {
+        "validate": "bicycle_store.events.invoice_events.validate_invoice",
+    },
+}
+
+# Scheduler Jobs
+scheduler_events = {
+    "daily": [
+        "bicycle_store.jobs.quotation_reminders.send_pending_quotation_reminders",
+        "bicycle_store.jobs.low_stock_alerts.send_low_stock_alerts",
+        "bicycle_store.jobs.daily_summary.send_daily_summary",
+    ]
+}
 # Apps
 # ------------------
 
